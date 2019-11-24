@@ -6,8 +6,8 @@ namespace Prima
 {
     class GraphEdge
     {
-        public int Point1 { get; set; } = 0;
-        public int Point2 { get; set; } = 0;
+        public int Point1 { get; } = 0;
+        public int Point2 { get; } = 0;
         public int Weight { get; set; } = 0;
 
         public GraphEdge(int p1, int p2, int weight)

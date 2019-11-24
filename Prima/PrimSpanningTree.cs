@@ -14,18 +14,13 @@ namespace Prima
         public PrimSpanningTree(List<GraphEdge> graph)
         {
             NotUsedEdges = graph;
-            GetPoints();
+            NotUsedPoints = GetPoints(graph);
         }
 
         public void Prim()
         {
-            int countPoints = NotUsedPoints.Count;
-
-            for (int i = 0; i < countPoints; ++i)
-                NotUsedPoints.Add(i);
-
             Random rnd = new Random();
-            UsedPoints.Add(rnd.Next(0, countPoints));
+            UsedPoints.Add(rnd.Next(0, NotUsedPoints.Count - 1));
             NotUsedPoints.RemoveAt(UsedPoints[0]);
 
             while (NotUsedPoints.Count > 0)
@@ -33,8 +28,8 @@ namespace Prima
                 int minEdge = -1;
                 for (int i = 0; i < NotUsedEdges.Count; ++i)
                 {
-                    if ((UsedPoints.IndexOf(NotUsedEdges[i].Point1) != -1) && (NotUsedPoints.IndexOf(NotUsedEdges[i].Point2) != -1) ||
-                (UsedPoints.IndexOf(NotUsedEdges[i].Point2) != -1) && (NotUsedPoints.IndexOf(NotUsedEdges[i].Point1) != -1))
+                    if ((UsedPoints.Contains(NotUsedEdges[i].Point1) && !UsedPoints.Contains(NotUsedEdges[i].Point2)) ||
+                (UsedPoints.Contains(NotUsedEdges[i].Point2) && !UsedPoints.Contains(NotUsedEdges[i].Point1)))
                     {
                         if (minEdge != -1)
                         {
@@ -46,7 +41,9 @@ namespace Prima
                     }
                 }
 
-                if (UsedPoints.IndexOf(NotUsedEdges[minEdge].Point1) != -1)
+                if (minEdge == -1) break;
+
+                if (UsedPoints.Contains(NotUsedEdges[minEdge].Point1))
                 {
                     UsedPoints.Add(NotUsedEdges[minEdge].Point2);
                     NotUsedPoints.Remove(NotUsedEdges[minEdge].Point2);
@@ -62,28 +59,28 @@ namespace Prima
             }
         }
 
-        private void GetPoints()
+        public List<int> GetPoints(List<GraphEdge> graph)
         {
-            for(int i = 0; i < NotUsedEdges.Capacity; ++i)
+            List<int> points = new List<int>();
+
+            for(int i = 0; i < graph.Count; ++i)
             {
-                if(NotUsedPoints == null || !NotUsedPoints.Contains(NotUsedEdges[i].Point1))
-                {
-                    NotUsedPoints.Add(NotUsedEdges[i].Point1);
-                }
-                if (NotUsedPoints == null || !NotUsedPoints.Contains(NotUsedEdges[i].Point2))
-                {
-                    NotUsedPoints.Add(NotUsedEdges[i].Point2);
-                }
+                if (points == null || !points.Contains(graph[i].Point1))
+                    points.Add(graph[i].Point1);
+                if (points == null || !points.Contains(graph[i].Point2))
+                    points.Add(graph[i].Point2);
             }
+
+            return points;
         }
 
         public override string ToString()
         {
             string spanningTree = "";
             for (int i = 0; i < SpanningTree.Count; ++i)
-                spanningTree += ("Point 1:" + SpanningTree[i].Point1 +
-                    "Point2: " + SpanningTree[i].Point2 + 
-                    "Weight: " + SpanningTree[i].Weight);
+                spanningTree += ("Point1: " + SpanningTree[i].Point1 +
+                    "\tPoint2: " + SpanningTree[i].Point2 + 
+                    "\tWeight: " + SpanningTree[i].Weight) + "\n";
             return spanningTree;
         }
     }
