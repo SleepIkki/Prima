@@ -76,5 +76,15 @@ namespace Prima
                 }
             }
         }
+
+        public override string ToString()
+        {
+            string spanningTree = "";
+            for (int i = 0; i < SpanningTree.Count; ++i)
+                spanningTree += ("Point 1:" + SpanningTree[i].Point1 +
+                    "Point2: " + SpanningTree[i].Point2 + 
+                    "Weight: " + SpanningTree[i].Weight);
+            return spanningTree;
+        }
     }
 }
